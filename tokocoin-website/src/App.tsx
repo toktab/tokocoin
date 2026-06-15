@@ -9,6 +9,7 @@ import { Header } from "./components/Header";
 import { StatusBanner } from "./components/StatusBanner";
 import { Hero } from "./components/Hero";
 import { About } from "./components/About";
+import { ReceivePanel } from "./components/ReceivePanel";
 import { SendForm } from "./components/SendForm";
 import { RecentTransfers } from "./components/RecentTransfers";
 import { Technical } from "./components/Technical";
@@ -69,6 +70,7 @@ function App() {
           onConnect={wallet.connect}
         />
         <About />
+        <ReceivePanel account={wallet.account} />
         <SendForm
           account={wallet.account}
           isTxPending={toko.isTxPending}

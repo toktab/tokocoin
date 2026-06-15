@@ -11,6 +11,7 @@ type Props = {
 
 const NAV_LINKS = [
   { href: "#about", label: "About" },
+  { href: "#receive", label: "Receive" },
   { href: "#send", label: "Send" },
   { href: "#transfers", label: "Transfers" },
   { href: "#contract", label: "Contract" },
