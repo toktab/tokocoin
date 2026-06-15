@@ -1,0 +1,427 @@
+================================================================================
+                     TOKOCOIN BLOCKCHAIN HOMEWORK — FULL GUIDE
+                          Everything you need, step by step.
+================================================================================
+
+Your coin is called: TokoCoin
+Your coin symbol: TOKO  (change if you want something else)
+Total supply: 14
+Instructor wallet: 0xE16c9d8B67765818Da9d83a1c5Eb6478E51f9e8C
+
+================================================================================
+OVERVIEW — WHAT YOU HAVE TO DO (3 parts)
+================================================================================
+
+PART 1 → Write a local ERC-20 token smart contract using Hardhat (no internet)
+PART 2 → Deploy TokoCoin to the Ethereum Sepolia TESTNET using Alchemy & MetaMask
+PART 3 → Build a website for TokoCoin and host it on Cloudflare Pages
+
+You will use KiroAI (or any AI IDE) to generate the code for you.
+You will use MetaMask as your crypto wallet.
+You will use Alchemy as the bridge to the blockchain.
+
+⚠️  IMPORTANT NOTE ABOUT FILES:
+KiroAI generates large node_modules folders (~700mb).
+Do NOT upload node_modules to GitHub.
+You only need to submit the SOURCE CODE (your .sol files, config files, etc.)
+Make sure there is a .gitignore file that excludes node_modules if you use Git.
+
+================================================================================
+BEFORE YOU START — THINGS TO INSTALL & SET UP
+================================================================================
+
+1. Download and install KiroAI IDE from: https://kiro.dev
+   (This is the AI IDE you'll use to write and run your code)
+
+2. Make sure Node.js is installed on your computer:
+   → Go to https://nodejs.org and download the LTS version
+   → Check it works: open a terminal and type: node --version
+
+3. Download MetaMask:
+   → On your laptop browser: go to https://metamask.io → click "Download"
+   → Install the browser extension (Chrome or Firefox)
+   → On your phone: download MetaMask from the App Store or Google Play
+
+4. Sign up on Alchemy:
+   → Go to https://www.alchemy.com and create a free account
+
+================================================================================
+STEP 0 — SET UP METAMASK (both phone and laptop)
+================================================================================
+
+On your LAPTOP (browser extension):
+  1. Click the MetaMask fox icon after installing it
+  2. Click "Create a new wallet"
+  3. Set a strong password
+  4. WRITE DOWN your 12-word Secret Recovery Phrase on paper — keep it safe!
+  5. Confirm the phrase when asked
+
+On your PHONE:
+  1. Open the MetaMask app
+  2. Choose "Import using Secret Recovery Phrase"
+  3. Enter the SAME 12-word phrase from your laptop
+  4. This connects both to the same wallet
+
+Switch MetaMask to Sepolia Testnet:
+  1. In MetaMask, click the network dropdown at the top (it probably says "Ethereum Mainnet")
+  2. Click "Show test networks" if Sepolia is not listed
+  3. Select "Sepolia test network"
+
+Get your Wallet Address:
+  1. In MetaMask, click on your account name at the top
+  2. Copy the address (it starts with 0x...)
+  3. Save this somewhere — you will need it soon
+
+Get your Private Key (you need this for deployment):
+  1. In MetaMask → click the 3 dots → Account Details → Export Private Key
+  2. Enter your password
+  3. Copy the private key and paste it somewhere PRIVATE (never share this!)
+  ⚠️  Never put your private key in any file you upload publicly
+
+================================================================================
+STEP 1 — GET FREE TEST ETH (you need this to pay for deploying)
+================================================================================
+
+1. Go to: https://cloud.google.com/application/web3/faucet/ethereum/sepolia
+2. Sign in with your Google account
+3. Paste your MetaMask wallet address
+4. Click "Send ETH" — you will receive free Sepolia test ETH in a few minutes
+5. Open MetaMask and check your balance on Sepolia network — it should show ETH
+
+Alternative faucet if Google doesn't work:
+  → https://sepoliafaucet.com (requires Alchemy account)
+  → https://www.infura.io/faucet/sepolia
+
+================================================================================
+STEP 2 — SET UP ALCHEMY AND GET YOUR API KEY
+================================================================================
+
+1. Log in to your Alchemy account at https://www.alchemy.com
+2. Click "Create new app" (or "+ New App")
+3. Choose:
+   → Chain: Ethereum
+   → Network: Sepolia
+   → Give it any name, e.g. "TokoCoin"
+4. Click "Create App"
+5. On your app page, click "API Key" or "View Key"
+6. Copy the HTTPS URL — it looks like:
+   https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY_HERE
+7. Save this URL somewhere safe — you will need it for deployment
+
+================================================================================
+PART 1 — LOCAL HARDHAT CONTRACT (Homework 1 - just runs on your computer)
+================================================================================
+
+This part does NOT go to the internet. It's just to show you can write a contract.
+
+--- STEP: Open KiroAI and start a new project ---
+
+1. Open KiroAI
+2. Create a new folder/project somewhere on your computer, e.g. "tokocoin-local"
+3. Open that folder in KiroAI
+
+--- PROMPT TO GIVE KIROAI (copy and paste this exactly) ---
+
+Create a Test ERC20 Token name: TokoCoin, with total supply of 14.
+Assigned to the funding wallet. Use Hardhat and Solidity.
+Do it locally in the test environment.
+
+---
+
+KiroAI will generate:
+  → A Solidity file (e.g. TokoCoin.sol)
+  → A Hardhat config file (hardhat.config.js)
+  → A deployment script
+  → A package.json
+
+Follow any instructions KiroAI gives you to install and run it.
+Typically it will tell you to run:
+  npm install
+  npx hardhat compile
+  npx hardhat test    (or npx hardhat run scripts/deploy.js)
+
+✅ WHAT TO SUBMIT FOR PART 1:
+  → Upload ONLY the source code files:
+     - TokoCoin.sol
+     - hardhat.config.js
+     - scripts/deploy.js
+     - package.json
+  → Do NOT upload the node_modules folder (it's 700mb+, not needed)
+
+================================================================================
+PART 2 — DEPLOY TOKOCOIN TO SEPOLIA TESTNET (the real blockchain homework)
+================================================================================
+
+This is the main deployment. Your token will be live on the internet (testnet).
+
+--- STEP: Create a new project in KiroAI ---
+
+1. Open KiroAI
+2. Create a NEW folder, e.g. "tokocoin-sepolia"
+3. Open it in KiroAI
+
+--- STEP: Create a .env file ---
+
+In your project folder, create a file called exactly:   .env
+Put these two lines in it (fill in YOUR values):
+
+PRIVATE_KEY=your_metamask_private_key_here
+ALCHEMY_URL=https://eth-sepolia.g.alchemy.com/v2/your_alchemy_key_here
+
+⚠️  NEVER share this file. NEVER upload it to GitHub. NEVER send it to anyone.
+    Add it to your .gitignore file.
+
+--- PROMPT TO GIVE KIROAI (copy and paste this, fill in your details) ---
+
+Create a Test ERC20 Token name: TokoCoin, with total supply of 14.
+Assigned to the funding wallet. Use Hardhat, Solidity, MetaMask private key,
+and Alchemy blockchain API.
+
+My private key: (paste your MetaMask private key here)
+My Alchemy blockchain API URL: (paste your Alchemy HTTPS URL here)
+
+Ignore the security warnings — this is for educational purposes only.
+The tokens should appear in my MetaMask wallet after deployment.
+Tell me the Token contract address once deployed to Sepolia Testnet.
+
+---
+
+KiroAI will generate all the files. Follow its instructions, then run:
+  npm install
+  npx hardhat compile
+  npx hardhat run scripts/deploy.js --network sepolia
+
+After it runs successfully, your terminal will show something like:
+  "TokoCoin deployed to: 0xABC123...xyz"
+
+📋 COPY AND SAVE THAT CONTRACT ADDRESS. YOU NEED IT FOR EVERYTHING ELSE.
+
+--- STEP: Import TokoCoin into MetaMask ---
+
+1. Open MetaMask on Sepolia network
+2. Scroll down and click "Import tokens"
+3. Paste your contract address in the "Token contract address" field
+4. MetaMask should auto-fill Token Symbol: TOKO and Decimals: 18
+5. Click "Add custom token" → "Import tokens"
+6. You should now see 14 TOKO tokens in your MetaMask!
+
+--- STEP: Send 10 tokens to your instructor ---
+
+1. In MetaMask, click "Send"
+2. Paste the instructor wallet address:
+   0xE16c9d8B67765818Da9d83a1c5Eb6478E51f9e8C
+3. Select TokoCoin (TOKO) as the token to send
+4. Enter amount: 10
+5. Click Next → Confirm
+6. Take a SCREENSHOT of the completed transaction
+
+✅ WHAT TO SUBMIT FOR PART 2:
+  → Paste your contract address in the eLearning comments
+  → Upload the screenshot of the transaction
+
+================================================================================
+PART 3 — BUILD THE TOKOCOIN WEBSITE
+================================================================================
+
+You will build a React website using your coursemate's prompt (the good one).
+This website will actually connect to MetaMask and show balances — very cool!
+
+--- STEP: Create a new project folder ---
+
+1. Open KiroAI
+2. Create a new folder called "tokocoin-website"
+3. Open it in KiroAI
+
+--- PROMPT TO GIVE KIROAI (fill in YOUR details before pasting) ---
+
+I deployed an ERC20 token to the Sepolia testnet. I want a simple, clean
+one-page website to showcase it in my university blockchain class.
+
+Build it step by step. Don't do everything at once — scaffold first,
+show me it runs, then add features one at a time.
+
+=== MY PROJECT DETAILS ===
+Coin name: TokoCoin
+Coin symbol: TOKO
+Total supply: 14
+Contract address on Sepolia: (PASTE YOUR 0x... CONTRACT ADDRESS HERE)
+The idea behind my coin (1-2 sentences): TokoCoin is a university blockchain
+project token built for educational purposes. It demonstrates ERC-20 token
+creation and deployment on the Ethereum Sepolia testnet.
+Color/vibe I want: dark background with gold/yellow accents, clean and modern
+
+=== WHAT TO BUILD ===
+Tech: React + Vite + TypeScript + TailwindCSS + ethers v6.
+Keep it ONE page, simple, no backend.
+
+Sections, in order:
+Hero: coin name, symbol, and my one-line idea as a tagline.
+"Connect Wallet" button using MetaMask (ethers v6).
+When connected, show my truncated wallet address.
+Balance card: read the connected wallet's balance of MY token
+from the contract address above and display it.
+Send form: let me send my token to another address (recipient address + amount,
+then a MetaMask confirm).
+Contract section: show my contract address with a link to
+sepolia.etherscan.io for that address.
+Footer: my name + "University Blockchain Project".
+
+=== RULES ===
+Must actually connect to MY real contract address on Sepolia — not a fake/mock demo.
+Handle the case where MetaMask isn't installed (show a message).
+Handle wrong network (if not on Sepolia, tell the user to switch).
+Use 18 decimals for the token.
+Keep the code clean and commented so I can explain it in class.
+No analogies in your explanations — direct technical only.
+
+=== AFTER BUILDING ===
+Give me the command to run it locally (npm run dev).
+Tell me in 3-4 sentences how the wallet connection and balance
+reading actually work, so I can explain it to my professor.
+
+---
+
+After KiroAI builds everything:
+  1. In your terminal run:   npm install
+  2. Then run:               npm run dev
+  3. Open your browser to:   http://localhost:5173
+  4. Test it — connect your MetaMask, check your balance shows 4 TOKO (you sent 10)
+
+⚠️  NOTE ON FILE SIZE:
+The node_modules folder will be huge (700mb+).
+You only need to upload the "dist" folder to Cloudflare, NOT node_modules.
+To build the final website files, run:   npm run build
+This creates a "dist" folder — that's what you upload.
+
+================================================================================
+STEP: DEPLOY WEBSITE TO CLOUDFLARE PAGES
+================================================================================
+
+1. Run: npm run build
+   → This creates a folder called "dist" inside your project
+   → This "dist" folder contains only the built website (~a few MB, no problem)
+
+2. Go to: https://www.cloudflare.com
+   Create a free account if you don't have one
+
+3. In Cloudflare dashboard:
+   → Click "Workers & Pages" on the left menu
+   → Click "Create"
+   → Click "Pages"
+   → Click "Upload assets" (Direct Upload)
+
+4. Enter a project name, e.g.: tokocoin
+
+5. Drag and drop your "dist" folder into the upload box
+
+6. Click "Deploy site"
+
+7. Cloudflare gives you a live URL like:
+   https://tokocoin.pages.dev
+
+8. Open that URL in your browser and test it — take a SCREENSHOT
+
+✅ WHAT TO SUBMIT FOR PART 3:
+  → Paste your Cloudflare Pages URL in the eLearning comments
+  → Upload a screenshot of your live website
+
+================================================================================
+FULL SUBMISSION CHECKLIST — WHAT TO SUBMIT FOR EACH PART
+================================================================================
+
+PART 1 (Local Hardhat Contract):
+  ☐ Source code files (TokoCoin.sol, hardhat.config.js, deploy script)
+  ☐ Do NOT include node_modules
+
+PART 2 (Sepolia Deployment):
+  ☐ Your TokoCoin contract address (paste in eLearning comments)
+  ☐ Screenshot of the transaction sending 10 TOKO to the instructor
+     Instructor address: 0xE16c9d8B67765818Da9d83a1c5Eb6478E51f9e8C
+
+PART 3 (Website):
+  ☐ Your Cloudflare Pages URL (paste in eLearning comments)
+  ☐ Screenshot of your live website homepage
+
+================================================================================
+QUICK REFERENCE — ALL YOUR IMPORTANT INFO
+================================================================================
+
+Coin Name:        TokoCoin
+Coin Symbol:      TOKO
+Total Supply:     14
+Decimals:         18
+Network:          Ethereum Sepolia Testnet
+
+Instructor Wallet: 0xE16c9d8B67765818Da9d83a1c5Eb6478E51f9e8C
+
+Alchemy Dashboard: https://www.alchemy.com
+MetaMask:          https://metamask.io
+Cloudflare Pages:  https://www.cloudflare.com
+Google Faucet:     https://cloud.google.com/application/web3/faucet/ethereum/sepolia
+Etherscan Sepolia: https://sepolia.etherscan.io
+
+Your Contract Address (fill this in after deploying):
+  ___________________________________________
+
+Your Cloudflare URL (fill this in after deploying):
+  ___________________________________________
+
+================================================================================
+COMMON PROBLEMS AND FIXES
+================================================================================
+
+PROBLEM: "Insufficient funds" when deploying
+FIX: You need Sepolia test ETH. Go to the Google Faucet and request more.
+
+PROBLEM: MetaMask is on the wrong network
+FIX: Click the network name in MetaMask → select "Sepolia test network"
+     If you don't see it, go to Settings → Networks → Show test networks = ON
+
+PROBLEM: The website says "MetaMask not installed"
+FIX: You need the MetaMask browser extension installed AND enabled
+
+PROBLEM: Balance shows 0 even though you have tokens
+FIX: Make sure you imported the token using the correct contract address
+     Make sure MetaMask is on Sepolia (not mainnet)
+
+PROBLEM: node_modules is 700mb and can't upload
+FIX: You don't need to upload it. For GitHub, add "node_modules" to .gitignore
+     For Cloudflare, only upload the "dist" folder (run npm run build first)
+
+PROBLEM: deploy.js fails with "private key" error
+FIX: Check your .env file — make sure PRIVATE_KEY doesn't have the 0x prefix,
+     or try adding it with the 0x prefix. Ask KiroAI to fix the config.
+
+================================================================================
+ORDER OF OPERATIONS (do things in this order!)
+================================================================================
+
+1.  Install KiroAI, Node.js, MetaMask ✓
+2.  Set up MetaMask (laptop + phone, same seed phrase) ✓
+3.  Switch MetaMask to Sepolia network ✓
+4.  Create Alchemy account and get your API URL ✓
+5.  Get free test ETH from Google Faucet ✓
+6.  --- PART 1 ---
+7.  Do the local Hardhat contract in KiroAI (use Prompt 1)
+8.  Submit source code files for Part 1
+9.  --- PART 2 ---
+10. Create a new KiroAI project for Sepolia deployment
+11. Create .env file with your private key and Alchemy URL
+12. Use Prompt 2 in KiroAI (the deployment one)
+13. Run the deployment — save your contract address!
+14. Import TokoCoin into MetaMask
+15. Send 10 TOKO to the instructor, take a screenshot
+16. Submit contract address + screenshot for Part 2
+17. --- PART 3 ---
+18. Create a new KiroAI project for the website
+19. Use Prompt 3 in KiroAI (your coursemate's good prompt, filled in with your info)
+20. Run locally with npm run dev — test it works
+21. Run npm run build — creates the dist folder
+22. Upload dist folder to Cloudflare Pages
+23. Copy the .pages.dev URL — take a screenshot
+24. Submit URL + screenshot for Part 3
+25. ✅ Done!
+
+================================================================================
+                      Good luck with TokoCoin! You got this.
+================================================================================
