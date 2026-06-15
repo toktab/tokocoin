@@ -41,11 +41,16 @@ npx hardhat run scripts/deploy.js --network hardhat
 - **Standard:** ERC20 (OpenZeppelin implementation)
 
 ## Project Status
-✅ Fully functional and tested  
-✅ All dependencies installed  
-✅ Successfully compiled  
-✅ All tests passing  
-✅ Deployed and verified on local Hardhat network
+✅ Part 1 Complete: Local development and testing  
+✅ Part 2 Complete: Deployed to Sepolia testnet  
+⏳ Part 3 Pending: Website development
+
+## Sepolia Deployment Details
+- **Contract Address:** 0x740fCC18f4B013C4bcD5c850f79Cdd4FB6399eb5
+- **Network:** Ethereum Sepolia Testnet
+- **Total Supply:** 14 TOKO
+- **Deployed to:** 0xFD824d5642c5E8A9D1ec9CeC75dd291AD6cDA2c8
+- **Transaction:** [View on Etherscan](https://sepolia.etherscan.io/address/0x740fCC18f4B013C4bcD5c850f79Cdd4FB6399eb5)
 
 ## Technology Stack
 - **Framework:** Hardhat 2.22.0

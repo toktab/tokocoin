@@ -57,6 +57,33 @@ This will:
 2. Assign all 14 tokens to the funding wallet (second account)
 3. Display deployment information including contract address and balances
 
+## Deployment on Sepolia Testnet
+
+The token has been successfully deployed to the Ethereum Sepolia testnet:
+
+- **Contract Address:** `0x740fCC18f4B013C4bcD5c850f79Cdd4FB6399eb5`
+- **Network:** Sepolia Testnet
+- **View on Etherscan:** [https://sepolia.etherscan.io/address/0x740fCC18f4B013C4bcD5c850f79Cdd4FB6399eb5](https://sepolia.etherscan.io/address/0x740fCC18f4B013C4bcD5c850f79Cdd4FB6399eb5)
+
+### Deploy to Sepolia
+
+```bash
+npx hardhat run scripts/deploy.js --network sepolia
+```
+
+This requires:
+- `.env` file with `PRIVATE_KEY` and `ALCHEMY_API_URL`
+- Sepolia test ETH for gas fees
+- Alchemy API configured for Sepolia network
+
+### Send Tokens
+
+Use the included script to send tokens:
+
+```bash
+npx hardhat run scripts/sendTokens.js --network sepolia
+```
+
 ## Contract Details
 
 The TokoCoin contract (`contracts/TokoCoin.sol`) inherits from OpenZeppelin's ERC20 implementation and:

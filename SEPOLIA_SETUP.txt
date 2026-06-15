@@ -1,0 +1,156 @@
+================================================================================
+                    PART 2: DEPLOY TO SEPOLIA TESTNET
+                        Complete Setup Guide
+================================================================================
+
+📍 CURRENT STEP: Setting up prerequisites for Sepolia deployment
+
+================================================================================
+CHECKLIST - DO THESE IN ORDER (check them off as you go!)
+================================================================================
+
+☐ 1. MetaMask installed on browser
+☐ 2. MetaMask wallet created (12-word seed phrase saved!)
+☐ 3. MetaMask switched to Sepolia Test Network
+☐ 4. Free Sepolia test ETH received (check balance in MetaMask)
+☐ 5. Alchemy account created
+☐ 6. Alchemy Sepolia app created and API URL saved
+☐ 7. MetaMask private key exported and saved safely
+
+Once ALL 7 items are checked, come back here and we'll do the deployment!
+
+================================================================================
+DETAILED STEPS FOR EACH ITEM
+================================================================================
+
+1️⃣  INSTALL METAMASK
+--------------------
+→ Go to: https://metamask.io
+→ Click "Download" → Install browser extension (Chrome/Firefox/Edge)
+→ Click the MetaMask fox icon in your browser
+
+✅ Done? Check the box above!
+
+
+2️⃣  CREATE METAMASK WALLET
+---------------------------
+→ Click "Create a new wallet"
+→ Set a strong password
+→ WRITE DOWN your 12-word Secret Recovery Phrase on PAPER
+   ⚠️  NEVER share this with anyone!
+   ⚠️  NEVER lose this - it's your only backup!
+→ Confirm the phrase when asked
+
+✅ Done? Check the box above!
+
+
+3️⃣  SWITCH TO SEPOLIA TEST NETWORK
+-----------------------------------
+→ Open MetaMask
+→ Click the network dropdown at the top (probably says "Ethereum Mainnet")
+→ If you don't see "Sepolia test network":
+   • Click "Show/hide test networks"
+   • Enable "Show test networks"
+→ Select "Sepolia test network"
+→ The network name should now show "Sepolia" at the top
+
+✅ Done? Check the box above!
+
+
+4️⃣  GET FREE SEPOLIA TEST ETH
+------------------------------
+→ In MetaMask, copy your wallet address (click on account name)
+→ Go to: https://cloud.google.com/application/web3/faucet/ethereum/sepolia
+→ Sign in with Google account
+→ Paste your wallet address
+→ Click "Get Sepolia ETH" or "Send ETH"
+→ Wait 2-5 minutes
+→ Check MetaMask - you should see ~0.05 ETH (or similar amount)
+
+Alternative faucets if Google doesn't work:
+• https://sepoliafaucet.com
+• https://www.infura.io/faucet/sepolia
+
+✅ Done? Check the box above!
+
+
+5️⃣  CREATE ALCHEMY ACCOUNT
+---------------------------
+→ Go to: https://www.alchemy.com
+→ Click "Sign Up" (or "Get started free")
+→ Create an account (use email or Google sign-in)
+→ Verify your email if asked
+
+✅ Done? Check the box above!
+
+
+6️⃣  CREATE ALCHEMY SEPOLIA APP & GET API URL
+---------------------------------------------
+→ Log in to Alchemy dashboard
+→ Click "+ Create new app" (or "Create app")
+→ Fill in:
+   • Name: TokoCoin (or any name you want)
+   • Chain: Ethereum
+   • Network: Sepolia
+→ Click "Create app"
+→ Find your app in the dashboard
+→ Click "API Key" or "View Key"
+→ Copy the HTTPS URL - looks like:
+   https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY_HERE
+
+📋 SAVE THIS URL - you'll need it in a moment!
+
+✅ Done? Check the box above!
+
+
+7️⃣  EXPORT METAMASK PRIVATE KEY
+--------------------------------
+⚠️  WARNING: Your private key gives FULL ACCESS to your wallet.
+    NEVER share it with anyone.
+    NEVER put it in a public file.
+
+→ Open MetaMask
+→ Click the 3 dots (⋮) at the top
+→ Click "Account details"
+→ Click "Show private key"
+→ Enter your MetaMask password
+→ Copy the private key (long string of letters/numbers)
+
+📋 SAVE THIS PRIVATELY - you'll need it in a moment!
+
+✅ Done? Check the box above!
+
+================================================================================
+ONCE ALL 7 ITEMS ARE DONE - TELL ME YOU'RE READY!
+================================================================================
+
+Say: "I'm ready, I have everything!"
+
+Then I'll help you:
+✅ Create the .env file with your private key and Alchemy URL
+✅ Update hardhat.config.js for Sepolia network
+✅ Install dotenv package
+✅ Deploy TokoCoin to Sepolia
+✅ Import token into MetaMask
+✅ Send 10 tokens to instructor
+
+================================================================================
+IMPORTANT REMINDERS
+================================================================================
+
+🔒 SECURITY:
+   • Your private key = full access to your wallet
+   • Never share it
+   • Never commit .env file to GitHub (it's in .gitignore already!)
+
+💰 TEST ETH:
+   • You need ~0.01 ETH minimum for deployment
+   • It's free test ETH, not real money
+   • If you run out, just request more from faucet
+
+⏱️  PATIENCE:
+   • Blockchain transactions take 10-30 seconds
+   • Faucets can take 2-5 minutes
+   • Don't worry if it's not instant!
+
+================================================================================
