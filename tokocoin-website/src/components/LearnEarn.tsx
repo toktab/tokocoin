@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { ARTICLES, CLAIM_AMOUNT_PER_CORRECT, type Article } from "../data/learnEarnContent";
-import { SEPOLIA_EXPLORER } from "../utils/constants";
+import { CONTRACT_ADDRESS, SEPOLIA_EXPLORER } from "../utils/constants";
 import type { FaucetTxStatus } from "../hooks/useFaucetClaim";
 
 type Step = "picking" | "reading" | "quizzing" | "scoring" | "claiming" | "claimed";
@@ -138,6 +138,23 @@ export function LearnEarn({ account, onConnect, claimReward, claimTxStatus }: Pr
   const handleBack = useCallback(() => {
     setStep("picking");
     setArticle(null);
+  }, []);
+
+  const addToken = useCallback(async () => {
+    if (!window.ethereum) return;
+    try {
+      await window.ethereum.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: CONTRACT_ADDRESS,
+            symbol: "TOKO",
+            decimals: 18,
+          },
+        },
+      });
+    } catch { /* user rejected */ }
   }, []);
 
   const progressPct = useMemo(() => {
@@ -462,6 +479,16 @@ export function LearnEarn({ account, onConnect, claimReward, claimTxStatus }: Pr
                     View Transaction on Etherscan
                   </a>
                 )}
+                <button
+                  type="button"
+                  onClick={addToken}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white bg-gradient-to-br from-cyan-600 to-blue-700 border border-cyan-500/50 shadow-[0_0_16px_rgba(6,182,212,0.3)] hover:shadow-[0_0_24px_rgba(6,182,212,0.5)] transition-all duration-300"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                  </svg>
+                  Add TOKO to MetaMask
+                </button>
                 <button
                   type="button"
                   onClick={handleBack}

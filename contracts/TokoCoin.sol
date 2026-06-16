@@ -8,6 +8,6 @@ contract TokoCoin is ERC20 {
 
     constructor(address _fundingWallet) ERC20("TokoCoin", "TOKO") {
         fundingWallet = _fundingWallet;
-        _mint(fundingWallet, 14 * 10**decimals());
+        _mint(fundingWallet, 100 * 10**decimals());
     }
 }

@@ -1,5 +1,4 @@
-export const CONTRACT_ADDRESS = "0xFD824d5642c5E8A9D1ec9CeC75dd291AD6cDA2c8";
-
+export const CONTRACT_ADDRESS = "0xB3270a13e08F85E2FB53Acc504e43Dcb15Af9775";
 export const TOKO_ABI = [
   "function balanceOf(address owner) view returns (uint256)",
   "function transfer(address to, uint256 amount) returns (bool)",

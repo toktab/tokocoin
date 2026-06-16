@@ -26,7 +26,7 @@ export function Hero({
   onConnect,
 }: Props) {
   const numericBalance = Number(balance);
-  const showBalanceSkeleton = Boolean(account) && isLoadingBalance;
+  const showBalanceSkeleton = Boolean(account) && isLoadingBalance && balance === "0";
   const totalSupplyNumber = totalSupply && totalSupplyDecimals
     ? Number(formatUnits(totalSupply, totalSupplyDecimals))
     : 50000;
