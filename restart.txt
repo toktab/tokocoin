@@ -1,0 +1,226 @@
+================================================================================
+                    TOKOCOIN — FULL RESTART GUIDE
+          How to recreate everything from scratch or change config
+================================================================================
+
+================================================================================
+1. CHANGE TOTAL SUPPLY (e.g. to 15000 TOKO)
+================================================================================
+
+File to edit: contracts/TokoCoin.sol
+Line to change:
+
+    _mint(fundingWallet, 14 * 10**decimals());
+                        ^^
+    Change "14" to "15000":
+    _mint(fundingWallet, 15000 * 10**decimals());
+
+Then deploy: npx hardhat run scripts/deploy.js --network sepolia
+Update frontend configs with the new addresses (see step 5).
+
+================================================================================
+2. CHANGE REWARD PER CORRECT ANSWER (e.g. from 1 TOKO to 5 TOKO)
+================================================================================
+
+File to edit: contracts/TokoFaucet.sol
+Line to change (constructor):
+
+    uint256 public rewardPerPoint = 1 ether;
+                                      ^
+    Change "1" to "5":
+    uint256 public rewardPerPoint = 5 ether;
+
+File to edit: tokocoin-website/src/data/learnEarnContent.ts
+Line to change:
+
+    export const CLAIM_AMOUNT_PER_CORRECT = 1;
+                                             ^
+    Change "1" to "5":
+    export const CLAIM_AMOUNT_PER_CORRECT = 5;
+
+Then redeploy both contracts (step 4).
+
+================================================================================
+3. FULL PROJECT RESTART — FROM SCRATCH
+================================================================================
+
+--- A. PREREQUISITES ---
+
+  1. Node.js installed (https://nodejs.org)
+  2. MetaMask browser extension installed
+  3. MetaMask wallet with SepoliaETH (get from faucet)
+  4. Alchemy account with Sepolia app (https://alchemy.com)
+  5. Text editor (VS Code recommended)
+
+--- B. SET UP PROJECT ---
+
+  Create project folder and install Hardhat:
+
+  mkdir C:\Users\Administrator\Desktop\tokocoin
+  cd C:\Users\Administrator\Desktop\tokocoin
+  npm init -y
+  npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
+  npm install @openzeppelin/contracts
+  npm install dotenv
+
+  Initialize Hardhat:
+  npx hardhat init
+
+  Create folder structure:
+  contracts/
+  scripts/
+  test/
+
+--- C. CREATE CONTRACTS ---
+
+  contracts/TokoCoin.sol  --  ERC20 token (copy from this project)
+  contracts/TokoFaucet.sol -- Reward faucet (copy from this project)
+
+--- D. CREATE DEPLOY SCRIPT ---
+
+  scripts/deploy.js  (copy from this project)
+
+--- E. CREATE TESTS (optional) ---
+
+  test/TokoCoin.test.js  (copy from this project)
+
+--- F. CONFIGURATION ---
+
+  Root .env file:
+    PRIVATE_KEY=your_metamask_private_key
+    ALCHEMY_API_URL=https://eth-sepolia.g.alchemy.com/v2/your_api_key
+
+  hardhat.config.js:
+    require("@nomicfoundation/hardhat-toolbox");
+    require("dotenv").config();
+    module.exports = {
+      solidity: "0.8.20",
+      networks: {
+        sepolia: {
+          url: process.env.ALCHEMY_API_URL,
+          accounts: [process.env.PRIVATE_KEY],
+        },
+      },
+    };
+
+--- G. COMPILE & DEPLOY ---
+
+  npx hardhat compile
+  npx hardhat run scripts/deploy.js --network sepolia
+
+  Save the output — you'll need the contract addresses.
+
+================================================================================
+4. SET UP FRONTEND (tokocoin-website)
+================================================================================
+
+  cd tokocoin-website
+  npm install
+
+  Create tokocoin-website/.env:
+    VITE_FAUCET_ADDRESS=0x...(from deploy output)
+
+  Update tokocoin-website/src/utils/constants.ts:
+    CONTRACT_ADDRESS = "0x...(from deploy output)"  (line 1)
+
+  Test locally:
+    npm run dev
+
+  Build for production:
+    npm run build        (creates dist/ folder)
+
+================================================================================
+5. DEPLOY TO CLOUDFLARE PAGES
+================================================================================
+
+  1. Go to https://dash.cloudflare.com
+  2. Log in or create account
+  3. Click "Pages" on left sidebar
+  4. Click "Upload assets"
+  5. Drag & drop the dist/ folder from tokocoin-website/dist/
+  6. Click "Deploy"
+  7. Wait ~20 seconds
+  8. Live URL: https://your-project.pages.dev
+
+  To update after changes:
+    npm run build          (rebuilds dist/)
+    Re-upload dist/ folder to Cloudflare Pages
+
+================================================================================
+6. QUICK REFERENCE — KEY FILES
+================================================================================
+
+  FILE                                    WHAT IT DOES
+  ──────────────────────────────────────────────────────────────────────
+  contracts/TokoCoin.sol                  ERC20 token logic + total supply
+  contracts/TokoFaucet.sol                Claim/reward contract
+  scripts/deploy.js                       Deploys both contracts + funds faucet
+  tokocoin-website/.env                   Faucet contract address (frontend)
+  tokocoin-website/src/utils/constants.ts Token + faucet ABIs + addresses
+  tokocoin-website/src/hooks/useFaucetClaim.ts  On-chain claim logic
+  tokocoin-website/src/components/LearnEarn.tsx Quiz + claim UI
+
+================================================================================
+7. COMMON COMMANDS
+================================================================================
+
+  Compile contracts:  npx hardhat compile
+  Run tests:         npx hardhat test
+  Deploy to Sepolia: npx hardhat run scripts/deploy.js --network sepolia
+   Start frontend:    cd tokocoin-website && npm run dev
+  Build frontend:    cd tokocoin-website && npm run build
+
+================================================================================
+8. CHEAT SHEET — WHAT TO EDIT FOR COMMON CHANGES
+================================================================================
+
+  ┌─────────────────────────────────────────────────────────────────────────────┐
+  │  TO CHANGE TOTAL SUPPLY (e.g. to 15000):                                   │
+  │    1. Open contracts/TokoCoin.sol  →  change 14 to 15000  →  save          │
+  │    2. npx hardhat run scripts/deploy.js --network sepolia                   │
+  │    3. Copy new addresses from output                                         │
+  │    4. Paste into tokocoin-website/.env (VITE_FAUCET_ADDRESS)                │
+  │    5. Paste into constants.ts (CONTRACT_ADDRESS, line 1)                    │
+  │    6. npm run dev  (restart dev server)                                     │
+  └─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────────┐
+  │  TO CHANGE REWARD (e.g. from 1 to 5 TOKO per correct):                     │
+  │    • contracts/TokoFaucet.sol  →  change "1 ether" to "5 ether"            │
+  │    • tokocoin-website/.../learnEarnContent.ts  →  change CLAIM to 5        │
+  └─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────────┐
+  │  TO REDEPLOY (after changing contracts):                                   │
+  │    npx hardhat compile                                                      │
+  │    npx hardhat run scripts/deploy.js --network sepolia                     │
+  │    → Copy both addresses → update .env + constants.ts                       │
+  └─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────────────┐
+  │  TO UPDATE LIVE SITE (after frontend changes, no contract changes):        │
+  │    cd tokocoin-website                                                      │
+  │    npm run build                                                            │
+  │    → Re-upload dist/ folder to Cloudflare Pages                            │
+  └─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+
+
+npx hardhat run scripts/deploy.js --network sepolia
+◇ injected env (2) from .env // tip: ⌘ override existing { override: true }
+Compiled 2 Solidity files successfully (evm target: paris).
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Deploying contracts with the account: 0xFD824d5642c5E8A9D1ec9CeC75dd291AD6cDA2c8
+Account balance: 41985516960023493
+TokoCoin deployed to: 0xB3270a13e08F85E2FB53Acc504e43Dcb15Af9775 <- Copy this to tokocoin-website\src\utils\contants.ts First line info
+Funding wallet balance: 100.0 TOKO
+Total supply: 100.0 TOKO
+TokoFaucet deployed to: 0x306d689e33b8bB9438dc46B1B225CEF8d7bDA982
+Faucet funded with 10 TOKO
+
+Add this to your tokocoin-website/.env file:
+VITE_FAUCET_ADDRESS=0x306d689e33b8bB9438dc46B1B225CEF8d7bDA982 <- Copy this to tokocoin-website\.env
+
+
+Add
