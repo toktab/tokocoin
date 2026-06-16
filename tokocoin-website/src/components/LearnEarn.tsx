@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { ARTICLES, CLAIM_AMOUNT_PER_CORRECT, type Article } from "../data/learnEarnContent";
+import { SEPOLIA_EXPLORER } from "../utils/constants";
+import type { FaucetTxStatus } from "../hooks/useFaucetClaim";
 
 type Step = "picking" | "reading" | "quizzing" | "scoring" | "claiming" | "claimed";
 
@@ -10,6 +12,7 @@ type ClaimedEntry = {
   score: number;
   earned: number;
   timestamp: number;
+  txHash?: string;
 };
 
 function loadClaimed(): ClaimedEntry[] {
@@ -73,9 +76,11 @@ function ArticleCard({ article, done, earned, onPick }: { article: Article; done
 type Props = {
   account: string;
   onConnect: () => void;
+  claimReward: (score: number, articleId: number) => Promise<{ ok: boolean; txHash?: string }>;
+  claimTxStatus: FaucetTxStatus;
 };
 
-export function LearnEarn({ account, onConnect }: Props) {
+export function LearnEarn({ account, onConnect, claimReward, claimTxStatus }: Props) {
   const [step, setStep] = useState<Step>("picking");
   const [article, setArticle] = useState<Article | null>(null);
   const [quiz, setQuiz] = useState<QuizState>({ answers: [null, null, null, null, null] });
@@ -112,18 +117,23 @@ export function LearnEarn({ account, onConnect }: Props) {
     window.scrollTo({ top: document.getElementById("learn-earn")?.offsetTop ?? 0, behavior: "smooth" });
   }, [article, canSubmit, quiz.answers]);
 
-  const handleClaim = useCallback(() => {
+  const handleClaim = useCallback(async () => {
     if (!article || step !== "scoring") return;
     setStep("claiming");
     const earned = score * CLAIM_AMOUNT_PER_CORRECT;
-    setTimeout(() => {
-      const entry: ClaimedEntry = { articleId: article.id, score, earned, timestamp: Date.now() };
-      const next = [entry, ...claimed.filter((c) => c.articleId !== article.id)];
-      setClaimed(next);
-      saveClaimed(next);
+    const result = await claimReward(score, article.id);
+    if (result.ok) {
+      const entry: ClaimedEntry = { articleId: article.id, score, earned, timestamp: Date.now(), txHash: result.txHash };
+      setClaimed((prev) => {
+        const next = [entry, ...prev.filter((c) => c.articleId !== article.id)];
+        saveClaimed(next);
+        return next;
+      });
       setStep("claimed");
-    }, 1200);
-  }, [article, score, step, claimed]);
+    } else {
+      setStep("scoring");
+    }
+  }, [article, score, step, claimReward]);
 
   const handleBack = useCallback(() => {
     setStep("picking");
@@ -404,13 +414,33 @@ export function LearnEarn({ account, onConnect }: Props) {
 
             {step === "claiming" && (
               <div className="text-center py-12 space-y-4">
-                <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-600/30 to-green-700/30 border border-emerald-500/30 flex items-center justify-center animate-pulse">
-                  <svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                <div className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-600/30 to-green-700/30 border border-emerald-500/30 flex items-center justify-center ${!claimTxStatus.txHash ? "animate-pulse" : ""}`}>
+                  {claimTxStatus.txHash ? (
+                    <a href={`${SEPOLIA_EXPLORER}/tx/${claimTxStatus.txHash}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 text-emerald-400">
+                      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  ) : (
+                    <svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
                 </div>
-                <p className="text-sm text-cyber-300 font-semibold">Claiming your TOKO...</p>
-                <p className="text-xs text-cyber-500/70">This is a demo claim. No transaction is broadcast.</p>
+                {claimTxStatus.message && (
+                  <p className="text-sm text-cyber-300 font-semibold">{claimTxStatus.message}</p>
+                )}
+                {!claimTxStatus.message && (
+                  <p className="text-sm text-cyber-300 font-semibold">Claiming your TOKO...</p>
+                )}
+                {claimTxStatus.txHash && (
+                  <a href={`${SEPOLIA_EXPLORER}/tx/${claimTxStatus.txHash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-cyber-500 hover:text-cyber-300 transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View on Etherscan
+                  </a>
+                )}
               </div>
             )}
 
@@ -424,6 +454,14 @@ export function LearnEarn({ account, onConnect }: Props) {
                 <p className="text-xl font-bold text-white">
                   +{score * CLAIM_AMOUNT_PER_CORRECT} TOKO Earned!
                 </p>
+                {claimTxStatus.txHash && (
+                  <a href={`${SEPOLIA_EXPLORER}/tx/${claimTxStatus.txHash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Transaction on Etherscan
+                  </a>
+                )}
                 <button
                   type="button"
                   onClick={handleBack}

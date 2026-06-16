@@ -18,6 +18,22 @@ async function main() {
   const balance = await tokoCoin.balanceOf(deployer.address);
   console.log("Funding wallet balance:", hre.ethers.formatUnits(balance, 18), "TOKO");
   console.log("Total supply:", hre.ethers.formatUnits(await tokoCoin.totalSupply(), 18), "TOKO");
+
+  // Deploy TokoFaucet
+  const TokoFaucet = await hre.ethers.getContractFactory("TokoFaucet");
+  const faucet = await TokoFaucet.deploy(tokenAddress);
+  await faucet.waitForDeployment();
+  const faucetAddress = await faucet.getAddress();
+  console.log("TokoFaucet deployed to:", faucetAddress);
+
+  // Fund the faucet with 10 TOKO (out of 14 total)
+  const fundTx = await tokoCoin.transfer(faucetAddress, hre.ethers.parseUnits("10", 18));
+  await fundTx.wait();
+  console.log("Faucet funded with 10 TOKO");
+
+  // Print the faucet address for the .env file
+  console.log("\nAdd this to your tokocoin-website/.env file:");
+  console.log(`VITE_FAUCET_ADDRESS=${faucetAddress}`);
 }
 
 main()

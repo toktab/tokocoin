@@ -58,11 +58,11 @@ export const BACKEND_URL: string =
   (import.meta.env.VITE_BACKEND_URL ?? "http://localhost:3001").trim();
 
 export const FAUCET_ABI = [
-  "function claimReward(uint8 score, bytes32 articleHash, bytes signature)",
-  "function claimed(bytes32) view returns (bool)",
-  "function trustedSigner() view returns (address)",
+  "function claimReward(uint8 score, uint256 articleId)",
+  "function claimedArticle(address,uint256) view returns (bool)",
   "function faucetBalance() view returns (uint256)",
-  "event RewardClaimed(address indexed user, uint8 score, bytes32 indexed articleHash, uint256 reward)",
+  "function rewardPerPoint() view returns (uint256)",
+  "event RewardClaimed(address indexed user, uint8 score, uint256 indexed articleId, uint256 reward)",
 ] as const;
 
 export type Transfer = {

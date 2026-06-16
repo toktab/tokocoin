@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useWallet } from "./hooks/useWallet";
 import { useTokoContract } from "./hooks/useTokoContract";
+import { useFaucetClaim } from "./hooks/useFaucetClaim";
 import { useSettings } from "./hooks/useSettings";
 import { useTotalSupply } from "./hooks/useTotalSupply";
 import { CONTRACT_ADDRESS } from "./utils/constants";
@@ -21,6 +22,7 @@ import { LearnEarn } from "./components/LearnEarn";
 function App() {
   const wallet = useWallet();
   const toko = useTokoContract(wallet.provider, wallet.account, wallet.ensureSepolia);
+  const faucet = useFaucetClaim(wallet.provider, wallet.account, wallet.ensureSepolia);
   const settings = useSettings();
   const supply = useTotalSupply();
 
@@ -86,7 +88,12 @@ function App() {
           transfers={toko.recentTransfers}
           onCopyContract={handleCopyContract}
         />
-        <LearnEarn account={wallet.account} onConnect={wallet.connect} />
+        <LearnEarn
+          account={wallet.account}
+          onConnect={wallet.connect}
+          claimReward={faucet.claim}
+          claimTxStatus={faucet.txStatus}
+        />
         <Technical onCopyContract={handleCopyContract} />
         <FAQ />
         <FinalCTA account={wallet.account} onConnect={wallet.connect} />
