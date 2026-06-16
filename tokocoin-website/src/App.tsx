@@ -16,6 +16,7 @@ import { Technical } from "./components/Technical";
 import { FAQ } from "./components/FAQ";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
+import { LearnEarn } from "./components/LearnEarn";
 
 function App() {
   const wallet = useWallet();
@@ -85,6 +86,7 @@ function App() {
           transfers={toko.recentTransfers}
           onCopyContract={handleCopyContract}
         />
+        <LearnEarn account={wallet.account} onConnect={wallet.connect} />
         <Technical onCopyContract={handleCopyContract} />
         <FAQ />
         <FinalCTA account={wallet.account} onConnect={wallet.connect} />

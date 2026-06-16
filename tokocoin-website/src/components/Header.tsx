@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { href: "#receive", label: "Receive" },
   { href: "#send", label: "Send" },
   { href: "#transfers", label: "Transfers" },
+  { href: "#learn-earn", label: "Learn" },
   { href: "#contract", label: "Contract" },
   { href: "#faq", label: "FAQ" },
 ];
