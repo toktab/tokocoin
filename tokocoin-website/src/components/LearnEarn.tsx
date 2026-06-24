@@ -78,9 +78,10 @@ type Props = {
   onConnect: () => void;
   claimReward: (score: number, articleId: number) => Promise<{ ok: boolean; txHash?: string }>;
   claimTxStatus: FaucetTxStatus;
+  resetClaimStatus: () => void;
 };
 
-export function LearnEarn({ account, onConnect, claimReward, claimTxStatus }: Props) {
+export function LearnEarn({ account, onConnect, claimReward, claimTxStatus, resetClaimStatus }: Props) {
   const [step, setStep] = useState<Step>("picking");
   const [article, setArticle] = useState<Article | null>(null);
   const [quiz, setQuiz] = useState<QuizState>({ answers: [null, null, null, null, null] });
@@ -91,11 +92,12 @@ export function LearnEarn({ account, onConnect, claimReward, claimTxStatus }: Pr
   const totalEarned = useMemo(() => claimed.reduce((sum, c) => sum + c.earned, 0), [claimed]);
 
   const handlePick = useCallback((a: Article) => {
+    resetClaimStatus();
     setArticle(a);
     setQuiz({ answers: [null, null, null, null, null] });
     setScore(0);
     setStep("reading");
-  }, []);
+  }, [resetClaimStatus]);
 
   const handleAnswer = useCallback((index: number, value: number) => {
     setQuiz((prev) => {
@@ -109,13 +111,14 @@ export function LearnEarn({ account, onConnect, claimReward, claimTxStatus }: Pr
 
   const handleSubmit = useCallback(() => {
     if (!article || !canSubmit) return;
+    resetClaimStatus();
     const s = quiz.answers.reduce<number>((acc, answer, i) => {
       return answer === article.questions[i].correctIndex ? acc + 1 : acc;
     }, 0);
     setScore(s);
     setStep("scoring");
     window.scrollTo({ top: document.getElementById("learn-earn")?.offsetTop ?? 0, behavior: "smooth" });
-  }, [article, canSubmit, quiz.answers]);
+  }, [article, canSubmit, quiz.answers, resetClaimStatus]);
 
   const handleClaim = useCallback(async () => {
     if (!article || step !== "scoring") return;
@@ -399,21 +402,28 @@ export function LearnEarn({ account, onConnect, claimReward, claimTxStatus }: Pr
                 </div>
 
                 {account ? (
-                  <button
-                    type="button"
-                    onClick={handleClaim}
-                    disabled={score === 0}
-                    className={`w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold transition-all duration-300 ${
-                      score > 0
-                        ? "text-white bg-gradient-to-br from-emerald-600 to-green-700 border border-emerald-500/50 shadow-[0_0_16px_rgba(16,185,129,0.3)] hover:shadow-[0_0_24px_rgba(16,185,129,0.5)]"
-                        : "text-cyber-500 bg-slate-800/60 border border-cyber-800/30 cursor-not-allowed"
-                    }`}
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Claim {score * CLAIM_AMOUNT_PER_CORRECT} TOKO
-                  </button>
+                  <div className="space-y-3">
+                    {claimTxStatus.success === false && claimTxStatus.message && (
+                      <div className="rounded-xl border border-red-800/40 bg-red-950/30 px-4 py-3 text-left">
+                        <p className="text-xs font-semibold text-red-200">{claimTxStatus.message}</p>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleClaim}
+                      disabled={score === 0}
+                      className={`w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold transition-all duration-300 ${
+                        score > 0
+                          ? "text-white bg-gradient-to-br from-emerald-600 to-green-700 border border-emerald-500/50 shadow-[0_0_16px_rgba(16,185,129,0.3)] hover:shadow-[0_0_24px_rgba(16,185,129,0.5)]"
+                          : "text-cyber-500 bg-slate-800/60 border border-cyber-800/30 cursor-not-allowed"
+                      }`}
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Claim {score * CLAIM_AMOUNT_PER_CORRECT} TOKO
+                    </button>
+                  </div>
                 ) : (
                   <button
                     type="button"

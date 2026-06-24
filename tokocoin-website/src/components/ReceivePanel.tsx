@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 
 type Props = {
   account: string;
+  onConnect: () => void;
 };
 
 function AddressQR({ address }: { address: string }) {
@@ -42,7 +43,7 @@ function AddressQR({ address }: { address: string }) {
   );
 }
 
-export function ReceivePanel({ account }: Props) {
+export function ReceivePanel({ account, onConnect }: Props) {
   const [justCopied, setJustCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
@@ -126,6 +127,16 @@ export function ReceivePanel({ account }: Props) {
             <p className="text-sm text-cyber-200/70">
               Connect your wallet to see your receive address.
             </p>
+            <button
+              type="button"
+              onClick={onConnect}
+              className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-white bg-gradient-to-br from-cyber-600 to-purple-700 border border-cyber-500/50 shadow-[0_0_16px_rgba(99,102,241,0.3)] hover:shadow-[0_0_24px_rgba(99,102,241,0.5)] transition-all"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+              Connect MetaMask
+            </button>
           </div>
         )}
       </div>

@@ -73,7 +73,7 @@ function App() {
           onConnect={wallet.connect}
         />
         <About />
-        <ReceivePanel account={wallet.account} />
+        <ReceivePanel account={wallet.account} onConnect={wallet.connect} />
         <SendForm
           account={wallet.account}
           isTxPending={toko.isTxPending}
@@ -93,6 +93,7 @@ function App() {
           onConnect={wallet.connect}
           claimReward={faucet.claim}
           claimTxStatus={faucet.txStatus}
+          resetClaimStatus={faucet.reset}
         />
         <Technical onCopyContract={handleCopyContract} />
         <FAQ />

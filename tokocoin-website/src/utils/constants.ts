@@ -50,8 +50,10 @@ export const HISTORY_BLOCK_LABEL = `${Number(
 export const MAX_FEED_ITEMS = 20;
 export const TOTAL_SUPPLY_POLL_MS = 30_000;
 
+const DEFAULT_FAUCET_ADDRESS = "0x306d689e33b8bB9438dc46B1B225CEF8d7bDA982";
+
 export const FAUCET_ADDRESS: string =
-  (import.meta.env.VITE_FAUCET_ADDRESS ?? "").trim();
+  (import.meta.env.VITE_FAUCET_ADDRESS ?? DEFAULT_FAUCET_ADDRESS).trim();
 
 export const BACKEND_URL: string =
   (import.meta.env.VITE_BACKEND_URL ?? "http://localhost:3001").trim();
